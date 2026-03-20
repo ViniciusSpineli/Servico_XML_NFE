@@ -17,6 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent
 ARQUIVO_BAIXA = BASE_DIR / "baixar_xml_nfe.py"
 ARQUIVO_MONITOR = BASE_DIR / "monitorar_baixa_xml.py"
 ARQUIVO_PID = BASE_DIR / "monitorar_baixa_xml.pid"
+ARQUIVO_LOGO = BASE_DIR / "fbs_2017.ico"
 
 
 def ler_configuracao_atual() -> dict[str, str]:
@@ -193,7 +194,7 @@ def configurar_janela(page: ft.Page) -> int:
     page.spacing = 0
     page.scroll = ft.ScrollMode.AUTO
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.bgcolor = "#b08cff"
+    page.bgcolor = "#e7eaef"
     page.window.width = largura_janela
     page.window.height = altura_janela
     page.window.resizable = True
@@ -219,15 +220,15 @@ def criar_input(
         can_reveal_password=password,
         prefix_icon=icone,
         filled=True,
-        bgcolor="#f1e5ff",
-        color="#27153f",
+        bgcolor="#f5f7fa",
+        color="#24313d",
         border=ft.InputBorder.OUTLINE,
         border_radius=20,
-        border_color="#caa8ff",
-        focused_border_color="#7c4dff",
+        border_color="#d9dee7",
+        focused_border_color="#7b8da6",
         focused_bgcolor="#ffffff",
         content_padding=18,
-        label_style=ft.TextStyle(color="#6f4aa6", size=12, weight=ft.FontWeight.W_600),
+        label_style=ft.TextStyle(color="#5d6d80", size=12, weight=ft.FontWeight.W_600),
     )
 
 
@@ -289,13 +290,13 @@ async def main(page: ft.Page) -> None:
 
     status = ft.Text(
         value=status_servico(),
-        color="#f4ecff",
+        color="#334155",
         size=13,
         weight=ft.FontWeight.W_600,
     )
     mensagem = ft.Text(
         value="",
-        color="#d9c7ff",
+        color="#445468",
         size=12,
         selectable=True,
     )
@@ -303,7 +304,7 @@ async def main(page: ft.Page) -> None:
         width=largura_bloco,
         padding=ft.Padding.symmetric(horizontal=16, vertical=14),
         border_radius=18,
-        bgcolor="#33204f",
+        bgcolor="#eef2f6",
         content=mensagem,
     )
 
@@ -379,21 +380,28 @@ async def main(page: ft.Page) -> None:
                         "Painel de XML",
                         size=26,
                         weight=ft.FontWeight.BOLD,
-                        color="#ffffff",
+                        color="#263341",
                     ),
                     ft.Text(
                         "Controle do servico e configuracoes do download.",
                         size=12,
-                        color="#e3d7ff",
+                        color="#66758a",
                     ),
                 ],
             ),
             ft.Container(
                 padding=ft.Padding.symmetric(horizontal=14, vertical=8),
                 border_radius=18,
-                bgcolor="#f3ecff22",
-                border=ft.Border.all(1, "#ffffff22"),
-                content=ft.Icon(ft.Icons.CLOUD_SYNC_OUTLINED, color="#ffffff"),
+                bgcolor="#ffffffcc",
+                border=ft.Border.all(1, "#d7dde6"),
+                shadow=[
+                    ft.BoxShadow(
+                        blur_radius=16,
+                        color="#a8b4c21f",
+                        offset=ft.Offset(0, 8),
+                    )
+                ],
+                content=ft.Icon(ft.Icons.CLOUD_SYNC_OUTLINED, color="#64748b"),
             ),
         ],
     )
@@ -401,12 +409,19 @@ async def main(page: ft.Page) -> None:
     status_chip = ft.Container(
         padding=ft.Padding.symmetric(horizontal=16, vertical=10),
         border_radius=18,
-        bgcolor="#ffffff18",
-        border=ft.Border.all(1, "#ffffff18"),
+        bgcolor="#ffffffd9",
+        border=ft.Border.all(1, "#d8dee7"),
+        shadow=[
+            ft.BoxShadow(
+                blur_radius=18,
+                color="#a8b4c22b",
+                offset=ft.Offset(0, 10),
+            )
+        ],
         content=ft.Row(
             spacing=10,
             controls=[
-                ft.Icon(ft.Icons.RADAR_OUTLINED, color="#ffffff", size=18),
+                ft.Icon(ft.Icons.RADAR_OUTLINED, color="#64748b", size=18),
                 status,
             ],
         ),
@@ -416,23 +431,19 @@ async def main(page: ft.Page) -> None:
         width=largura_bloco,
         padding=26,
         border_radius=34,
-        gradient=ft.LinearGradient(
-            begin=ft.Alignment(-1, -1),
-            end=ft.Alignment(1, 1),
-            colors=["#3d2466", "#2a1847", "#1d1238"],
-        ),
-        border=ft.Border.all(1, "#ffffff14"),
+        bgcolor="#ffffffee",
+        border=ft.Border.all(1, "#dbe2ea"),
         shadow=[
             ft.BoxShadow(
                 spread_radius=0,
                 blur_radius=34,
-                color="#12091f66",
+                color="#93a1b333",
                 offset=ft.Offset(0, 18),
             ),
             ft.BoxShadow(
                 spread_radius=0,
                 blur_radius=10,
-                color="#ffffff10",
+                color="#ffffffcc",
                 offset=ft.Offset(0, -2),
             ),
         ],
@@ -447,15 +458,15 @@ async def main(page: ft.Page) -> None:
                             "Configuracoes",
                             size=18,
                             weight=ft.FontWeight.W_700,
-                            color="#ffffff",
+                            color="#253241",
                         ),
-                        ft.Icon(ft.Icons.SETTINGS_ROUNDED, color="#dbc5ff"),
+                        ft.Icon(ft.Icons.SETTINGS_ROUNDED, color="#6f7f93"),
                     ],
                 ),
                 ft.Text(
                     "Preencha os dados abaixo para atualizar o servico automaticamente.",
                     size=12,
-                    color="#d9c7ff",
+                    color="#68778a",
                 ),
                 campo_cnpj,
                 campo_certificado,
@@ -475,31 +486,31 @@ async def main(page: ft.Page) -> None:
                 "Salvar configuracoes",
                 ft.Icons.SAVE_ROUNDED,
                 "#ffffff",
-                "#301c50",
+                "#24313d",
                 largura_bloco,
                 ao_salvar,
             ),
             criar_botao(
                 "Recarregar layout",
                 ft.Icons.REFRESH_ROUNDED,
-                "#7a4dff",
-                "#ffffff",
+                "#dce3eb",
+                "#24313d",
                 largura_bloco,
                 ao_recarregar,
             ),
             criar_botao(
                 "Parar servico",
                 ft.Icons.STOP_CIRCLE_OUTLINED,
-                "#4f2d79",
-                "#ffe8f0",
+                "#ced6df",
+                "#2d3a47",
                 largura_bloco,
                 ao_parar,
             ),
             criar_botao(
                 "Rodar servico",
                 ft.Icons.PLAY_CIRCLE_OUTLINE_ROUNDED,
-                "#2dc7b8",
-                "#081a1f",
+                "#8ea4ba",
+                "#ffffff",
                 largura_bloco,
                 ao_rodar,
             ),
@@ -533,35 +544,36 @@ async def main(page: ft.Page) -> None:
                 gradient=ft.LinearGradient(
                     begin=ft.Alignment(-1, -1),
                     end=ft.Alignment(1, 1),
-                    colors=["#d4b7ff", "#9a6df5", "#6c4ce0"],
+                    colors=["#f2f4f7", "#e4e8ed", "#d9dfe6"],
                 ),
             ),
             ft.Container(
-                width=280,
-                height=280,
-                left=-40,
-                top=90,
-                border_radius=140,
-                blur=90,
-                gradient=ft.LinearGradient(colors=["#ffffff88", "#ffffff00"]),
+                content=ft.Image(
+                    src=str(ARQUIVO_LOGO),
+                    width=420,
+                    height=420,
+                    fit=ft.BoxFit.CONTAIN,
+                    opacity=0.08,
+                ),
+                align=ft.Alignment(0.65, -0.1),
             ),
             ft.Container(
-                width=240,
-                height=240,
-                right=-20,
-                top=40,
-                border_radius=120,
-                blur=70,
-                gradient=ft.LinearGradient(colors=["#6842cf", "#9f7eff11"]),
+                width=320,
+                height=320,
+                left=-70,
+                top=80,
+                border_radius=160,
+                blur=120,
+                gradient=ft.LinearGradient(colors=["#ffffffaa", "#ffffff00"]),
             ),
             ft.Container(
-                width=210,
-                height=210,
-                right=10,
-                bottom=120,
-                border_radius=105,
-                blur=80,
-                gradient=ft.LinearGradient(colors=["#ffffff44", "#ffffff00"]),
+                width=260,
+                height=260,
+                right=-40,
+                bottom=70,
+                border_radius=130,
+                blur=100,
+                gradient=ft.LinearGradient(colors=["#c6d0db88", "#ffffff00"]),
             ),
             conteudo,
         ],
