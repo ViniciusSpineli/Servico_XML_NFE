@@ -1564,3 +1564,5 @@
 [20/03/2026 13:26:13] Retorno do processo: 0
 [20/03/2026 13:26:13] Proxima tentativa em 10 minuto(s), por volta de 20/03/2026 13:36:13.
 [20/03/2026 13:31:48] Monitor encerrado pelo usuario.
+[20/03/2026 17:20:19] Monitor iniciado. Intervalo: 10 minuto(s). Pressione Ctrl+C para parar.
+[20/03/2026 17:20:19] Executando baixar_xml_nfe.py...

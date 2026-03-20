@@ -20,7 +20,7 @@ UF_AUTOR = "35"  # Codigo IBGE da UF do autor. Ex.: 35=SP, 41=PR, 43=RS
 AMBIENTE = "producao"  # "producao" ou "homologacao"
 
 # Opcao 1: certificado A1 em PFX/P12
-CAMINHO_CERTIFICADO_PFX = r"C:\Users\vinic\OneDrive\Área de Trabalho\Projetos_Python\DANFE\GV_BONELLO_SENHA_123456.pfx"
+CAMINHO_CERTIFICADO_PFX = "C:\Users\vinic\OneDrive\Área de Trabalho\Projetos_Python\DANFE\GV_BONELLO_SENHA_123456.pfx"
 SENHA_CERTIFICADO = "123456"
 
 # Opcao 2: se voce ja tiver PEM separado, preencha os dois abaixo e ignore o PFX
@@ -29,7 +29,7 @@ CAMINHO_CHAVE_PRIVADA_PEM = ""
 CAMINHO_ARQUIVO_ULT_NSU = r""
 CAMINHO_ARQUIVO_PROXIMA_CONSULTA = r""
 
-CAMINHO_SALVAR_XML = r"C:\Users\vinic\OneDrive\Área de Trabalho\Nova pasta"
+CAMINHO_SALVAR_XML = "C:\Users\vinic\OneDrive\Área de Trabalho\Nova pasta"
 
 MAX_CONSULTAS = 30
 TIMEOUT_SEGUNDOS = 60

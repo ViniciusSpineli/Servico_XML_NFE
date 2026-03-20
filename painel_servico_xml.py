@@ -13,6 +13,10 @@ from pathlib import Path
 import flet as ft
 
 
+# Arquivos principais controlados pelo painel:
+# - baixar_xml_nfe.py: consulta a SEFAZ e salva os XMLs
+# - monitorar_baixa_xml.py: roda em loop tentando executar a consulta
+# - monitorar_baixa_xml.pid: guarda o PID do monitor para iniciar/parar o serviço
 BASE_DIR = Path(__file__).resolve().parent
 ARQUIVO_BAIXA = BASE_DIR / "baixar_xml_nfe.py"
 ARQUIVO_MONITOR = BASE_DIR / "monitorar_baixa_xml.py"
@@ -21,6 +25,7 @@ ARQUIVO_LOGO = BASE_DIR / "fbs_2017.ico"
 
 
 def ler_configuracao_atual() -> dict[str, str]:
+    # Lê do baixar_xml_nfe.py os valores atuais que devem aparecer preenchidos na tela.
     conteudo = ARQUIVO_BAIXA.read_text(encoding="utf-8")
     chaves = {
         "CNPJ_AUTOR": "",
@@ -43,6 +48,7 @@ def ler_configuracao_atual() -> dict[str, str]:
 
 
 def substituir_linha(conteudo: str, variavel: str, valor: str) -> str:
+    # Substitui a linha inteira de uma variável no arquivo Python de configuração.
     linha_nova = f"{variavel} = {json.dumps(valor, ensure_ascii=False)}"
     padrao = rf"^{variavel}\s*=.*$"
     return re.sub(padrao, linha_nova, conteudo, flags=re.MULTILINE)
@@ -54,6 +60,7 @@ def salvar_configuracao(
     senha: str,
     caminho_saida: str,
 ) -> None:
+    # Persiste no baixar_xml_nfe.py o que foi preenchido nos inputs do painel.
     conteudo = ARQUIVO_BAIXA.read_text(encoding="utf-8")
     conteudo = substituir_linha(conteudo, "CNPJ_AUTOR", cnpj)
     conteudo = substituir_linha(conteudo, "CAMINHO_CERTIFICADO_PFX", caminho_certificado)
@@ -63,6 +70,7 @@ def salvar_configuracao(
 
 
 def ler_pid() -> int | None:
+    # Se o monitor já estiver rodando, o PID salvo aqui permite pará-lo depois.
     if not ARQUIVO_PID.exists():
         return None
 
@@ -73,6 +81,7 @@ def ler_pid() -> int | None:
 
 
 def processo_ativo(pid: int | None) -> bool:
+    # Checa se o PID salvo ainda corresponde a um processo ativo no sistema.
     if not pid:
         return False
 
@@ -84,6 +93,7 @@ def processo_ativo(pid: int | None) -> bool:
 
 
 def iniciar_monitor() -> str:
+    # Inicia o monitor em segundo plano e salva o PID para controle futuro.
     pid_atual = ler_pid()
     if processo_ativo(pid_atual):
         return f"Servico ja esta rodando. PID: {pid_atual}"
@@ -107,6 +117,7 @@ def iniciar_monitor() -> str:
 
 
 def parar_monitor() -> str:
+    # Para o monitor usando o PID salvo pelo painel.
     pid = ler_pid()
     if not processo_ativo(pid):
         try:
@@ -133,6 +144,7 @@ def parar_monitor() -> str:
 
 
 def status_servico() -> str:
+    # Texto simples usado na interface para mostrar se o serviço está ligado.
     pid = ler_pid()
     if processo_ativo(pid):
         return f"Status do servico: rodando (PID {pid})"
@@ -140,6 +152,7 @@ def status_servico() -> str:
 
 
 def recarregar_aplicacao() -> None:
+    # Abre uma nova instância do painel para refletir alterações visuais/código.
     subprocess.Popen(
         [sys.executable, str(Path(__file__).resolve())],
         cwd=str(BASE_DIR),
@@ -150,6 +163,7 @@ def recarregar_aplicacao() -> None:
 
 
 def obter_area_util_monitor_principal() -> tuple[int, int, int, int] | None:
+    # No Windows, pega a área útil do monitor principal para dimensionar a janela.
     if os.name != "nt":
         return None
 
@@ -176,6 +190,7 @@ def obter_area_util_monitor_principal() -> tuple[int, int, int, int] | None:
 
 
 def configurar_janela(page: ft.Page) -> int:
+    # Define tamanho, posição e limites mínimos da janela do Flet.
     area_util = obter_area_util_monitor_principal()
     if area_util is None:
         largura_janela = 470
@@ -211,6 +226,7 @@ def criar_input(
     password: bool = False,
     autofocus: bool = False,
 ) -> ft.TextField:
+    # Fábrica visual dos campos de entrada para manter o estilo consistente.
     return ft.TextField(
         label=label,
         value=valor,
@@ -240,6 +256,7 @@ def criar_botao(
     largura: int,
     acao,
 ) -> ft.Button:
+    # Fábrica visual dos botões principais do painel.
     return ft.Button(
         texto,
         icon=icone,
@@ -257,10 +274,12 @@ def criar_botao(
 
 
 async def main(page: ft.Page) -> None:
+    # Função principal da interface. Monta a janela, carrega config e cria a tela.
     largura_janela = configurar_janela(page)
     largura_bloco = min(420, max(330, largura_janela - 86))
     config = ler_configuracao_atual()
 
+    # Inputs principais que o usuário edita para alimentar o baixar_xml_nfe.py.
     campo_cnpj = criar_input(
         "CNPJ CLIENTE",
         config["CNPJ_AUTOR"],
@@ -288,6 +307,7 @@ async def main(page: ft.Page) -> None:
         largura_bloco,
     )
 
+    # Bloco de mensagem/feedback usado para mostrar sucesso, erro e status do serviço.
     status = ft.Text(
         value=status_servico(),
         color="#334155",
@@ -309,6 +329,7 @@ async def main(page: ft.Page) -> None:
     )
 
     def atualizar_status(texto: str, cor: str, fundo: str) -> None:
+        # Atualiza o feedback visual no painel sem reiniciar a aplicação.
         mensagem.value = texto
         mensagem.color = cor
         mensagem_box.bgcolor = fundo
@@ -316,6 +337,7 @@ async def main(page: ft.Page) -> None:
         page.update()
 
     def ao_salvar(_: ft.ControlEvent) -> None:
+        # Botão "Salvar configurações": grava os dados do formulário no script de baixa.
         try:
             salvar_configuracao(
                 campo_cnpj.value or "",
@@ -336,6 +358,7 @@ async def main(page: ft.Page) -> None:
             )
 
     def ao_rodar(_: ft.ControlEvent) -> None:
+        # Botão "Rodar serviço": inicia o monitor em segundo plano.
         try:
             texto = iniciar_monitor()
             atualizar_status(texto, "#e8fff1", "#214635")
@@ -347,6 +370,7 @@ async def main(page: ft.Page) -> None:
             )
 
     def ao_parar(_: ft.ControlEvent) -> None:
+        # Botão "Parar serviço": encerra o monitor usando o PID salvo.
         try:
             texto = parar_monitor()
             atualizar_status(texto, "#fff4dd", "#5f431a")
@@ -358,6 +382,7 @@ async def main(page: ft.Page) -> None:
             )
 
     def ao_recarregar(_: ft.ControlEvent) -> None:
+        # Botão "Recarregar layout": abre uma nova instância do painel e fecha a atual.
         try:
             recarregar_aplicacao()
             page.window.close()
@@ -368,6 +393,7 @@ async def main(page: ft.Page) -> None:
                 "#5a2131",
             )
 
+    # Cabeçalho superior com título do painel e ícone decorativo.
     topo = ft.Row(
         width=largura_bloco,
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -406,6 +432,7 @@ async def main(page: ft.Page) -> None:
         ],
     )
 
+    # Cartão pequeno que mostra rapidamente o estado do serviço.
     status_chip = ft.Container(
         padding=ft.Padding.symmetric(horizontal=16, vertical=10),
         border_radius=18,
@@ -427,6 +454,7 @@ async def main(page: ft.Page) -> None:
         ),
     )
 
+    # Card principal com relevo onde ficam os 4 inputs e a área de mensagens.
     card_inputs = ft.Container(
         width=largura_bloco,
         padding=26,
@@ -477,6 +505,7 @@ async def main(page: ft.Page) -> None:
         ),
     )
 
+    # Botões de ação, empilhados no rodapé para combinar com o visual do painel.
     botoes = ft.Column(
         width=largura_bloco,
         spacing=12,
@@ -517,6 +546,7 @@ async def main(page: ft.Page) -> None:
         ],
     )
 
+    # Conteúdo central da tela. Tudo que fica acima do background decorativo.
     conteudo = ft.Container(
         expand=True,
         padding=ft.Padding.symmetric(horizontal=28, vertical=26),
@@ -536,6 +566,11 @@ async def main(page: ft.Page) -> None:
         ),
     )
 
+    # Fundo em camadas:
+    # - gradiente cinza claro
+    # - marca d'água com o logo
+    # - elementos suaves de luz
+    # - conteúdo principal por cima
     fundo = ft.Stack(
         expand=True,
         controls=[
@@ -557,24 +592,7 @@ async def main(page: ft.Page) -> None:
                 ),
                 align=ft.Alignment(0.65, -0.1),
             ),
-            ft.Container(
-                width=320,
-                height=320,
-                left=-70,
-                top=80,
-                border_radius=160,
-                blur=120,
-                gradient=ft.LinearGradient(colors=["#ffffffaa", "#ffffff00"]),
-            ),
-            ft.Container(
-                width=260,
-                height=260,
-                right=-40,
-                bottom=70,
-                border_radius=130,
-                blur=100,
-                gradient=ft.LinearGradient(colors=["#c6d0db88", "#ffffff00"]),
-            ),
+            
             conteudo,
         ],
     )
@@ -583,4 +601,5 @@ async def main(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
+    # Ponto de entrada do aplicativo Flet.
     ft.run(main)
