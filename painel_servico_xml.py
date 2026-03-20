@@ -20,6 +20,7 @@ import flet as ft
 BASE_DIR = Path(__file__).resolve().parent
 ARQUIVO_BAIXA = BASE_DIR / "baixar_xml_nfe.py"
 ARQUIVO_MONITOR = BASE_DIR / "monitorar_baixa_xml.py"
+ARQUIVO_SERVICO_BAT = BASE_DIR / "servico.bat"
 ARQUIVO_PID = BASE_DIR / "monitorar_baixa_xml.pid"
 ARQUIVO_LOGO = BASE_DIR / "fbs_2017.ico"
 
@@ -49,7 +50,18 @@ def ler_configuracao_atual() -> dict[str, str]:
 
 def substituir_linha(conteudo: str, variavel: str, valor: str) -> str:
     # Substitui a linha inteira de uma variável no arquivo Python de configuração.
-    linha_nova = f"{variavel} = {json.dumps(valor, ensure_ascii=False)}"
+    if variavel in {
+        "CAMINHO_CERTIFICADO_PFX",
+        "CAMINHO_CERTIFICADO_PEM",
+        "CAMINHO_CHAVE_PRIVADA_PEM",
+        "CAMINHO_SALVAR_XML",
+        "CAMINHO_ARQUIVO_ULT_NSU",
+        "CAMINHO_ARQUIVO_PROXIMA_CONSULTA",
+    }:
+        valor_seguro = valor.replace("\\", "\\\\").replace('"', '\\"')
+        linha_nova = f'{variavel} = r"{valor_seguro}"'
+    else:
+        linha_nova = f"{variavel} = {json.dumps(valor, ensure_ascii=False)}"
     padrao = rf"^{variavel}\s*=.*$"
     return re.sub(padrao, linha_nova, conteudo, flags=re.MULTILINE)
 
@@ -98,6 +110,9 @@ def iniciar_monitor() -> str:
     if processo_ativo(pid_atual):
         return f"Servico ja esta rodando. PID: {pid_atual}"
 
+    if not ARQUIVO_SERVICO_BAT.exists():
+        return f"Arquivo nao encontrado: {ARQUIVO_SERVICO_BAT}"
+
     kwargs: dict[str, object] = {}
     if os.name == "nt":
         kwargs["creationflags"] = (
@@ -105,7 +120,7 @@ def iniciar_monitor() -> str:
         )
 
     processo = subprocess.Popen(
-        [sys.executable, str(ARQUIVO_MONITOR)],
+        ["cmd", "/c", str(ARQUIVO_SERVICO_BAT)],
         cwd=str(BASE_DIR),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -519,14 +534,7 @@ async def main(page: ft.Page) -> None:
                 largura_bloco,
                 ao_salvar,
             ),
-            criar_botao(
-                "Recarregar layout",
-                ft.Icons.REFRESH_ROUNDED,
-                "#dce3eb",
-                "#24313d",
-                largura_bloco,
-                ao_recarregar,
-            ),
+           
             criar_botao(
                 "Parar servico",
                 ft.Icons.STOP_CIRCLE_OUTLINED,

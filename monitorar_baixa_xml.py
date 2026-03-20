@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-INTERVALO_MINUTOS = 10
+INTERVALO_MINUTOS = 2
 RODAR_IMEDIATAMENTE = True
 CAMINHO_SCRIPT_ALVO = Path(__file__).with_name("baixar_xml_nfe.py")
 CAMINHO_LOG = Path(__file__).with_name("monitorar_baixa_xml.log")

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import base64
 import csv
@@ -20,7 +20,7 @@ UF_AUTOR = "35"  # Codigo IBGE da UF do autor. Ex.: 35=SP, 41=PR, 43=RS
 AMBIENTE = "producao"  # "producao" ou "homologacao"
 
 # Opcao 1: certificado A1 em PFX/P12
-CAMINHO_CERTIFICADO_PFX = "C:\Users\vinic\OneDrive\Área de Trabalho\Projetos_Python\DANFE\GV_BONELLO_SENHA_123456.pfx"
+CAMINHO_CERTIFICADO_PFX = r"C:\Users\vinic\OneDrive\Área de Trabalho\Projetos_Python\DANFE\GV_BONELLO_SENHA_123456.pfx"
 SENHA_CERTIFICADO = "123456"
 
 # Opcao 2: se voce ja tiver PEM separado, preencha os dois abaixo e ignore o PFX
@@ -29,7 +29,7 @@ CAMINHO_CHAVE_PRIVADA_PEM = ""
 CAMINHO_ARQUIVO_ULT_NSU = r""
 CAMINHO_ARQUIVO_PROXIMA_CONSULTA = r""
 
-CAMINHO_SALVAR_XML = "C:\Users\vinic\OneDrive\Área de Trabalho\Nova pasta"
+CAMINHO_SALVAR_XML = r"C:\Users\vinic\OneDrive\Área de Trabalho\Nova pasta"
 
 MAX_CONSULTAS = 30
 TIMEOUT_SEGUNDOS = 60
@@ -55,12 +55,12 @@ def obter_area_de_trabalho() -> Path:
 
     one_drive = os.environ.get("OneDrive")
     if one_drive:
-        candidatos.append(Path(one_drive) / "Área de Trabalho")
+        candidatos.append(Path(one_drive) / "Ãrea de Trabalho")
         candidatos.append(Path(one_drive) / "Desktop")
 
     home = Path.home()
     candidatos.append(home / "Desktop")
-    candidatos.append(home / "Área de Trabalho")
+    candidatos.append(home / "Ãrea de Trabalho")
 
     for caminho in candidatos:
         if caminho.exists():
@@ -561,11 +561,12 @@ def consultar_ultimos_documentos(
     uf: str,
     ambiente: str,
     cert_files: tuple[str, str],
-) -> tuple[list[dict[str, str | bytes]], str, str]:
+) -> tuple[list[dict[str, str | bytes]], str, str, str]:
     ult_nsu = carregar_ult_nsu()
     documentos: list[dict[str, str | bytes]] = []
     ultimo_cstat = ""
     ultimo_xmotivo = ""
+    classificacao = "ha_chance_documento_novo"
 
     for tentativa in range(1, MAX_CONSULTAS + 1):
         envelope = montar_envelope(cnpj, uf, ambiente, ult_nsu)
@@ -585,24 +586,28 @@ def consultar_ultimos_documentos(
         if cstat == "656":
             base_bloqueio = interpretar_dhresp(dh_resp) or agora_local()
             salvar_proxima_consulta(base_bloqueio + timedelta(hours=1))
+            classificacao = "consulta_bloqueada_1h"
             break
 
         if cstat == "137":
             limpar_proxima_consulta()
+            classificacao = "tudo_ja_foi_lido"
             break
 
         if ult_nsu_retorno == max_nsu:
             limpar_proxima_consulta()
+            classificacao = "tudo_ja_foi_lido"
             break
 
         if ult_nsu_retorno == formatar_nsu(ult_nsu):
             limpar_proxima_consulta()
+            classificacao = "ha_chance_documento_novo"
             break
 
         ult_nsu = ult_nsu_retorno
 
     documentos_ordenados = sorted(documentos, key=lambda item: str(item["nsu"]))
-    return documentos_ordenados, ultimo_cstat, ultimo_xmotivo
+    return documentos_ordenados, ultimo_cstat, ultimo_xmotivo, classificacao
 
 
 def limpar_temporarios(arquivos: list[Path]) -> None:
@@ -628,7 +633,7 @@ def main() -> int:
 
         cnpj, uf, ambiente = validar_configuracao()
         cert_files, temporarios = carregar_certificado()
-        documentos, cstat_final, motivo_final = consultar_ultimos_documentos(
+        documentos, cstat_final, motivo_final, classificacao = consultar_ultimos_documentos(
             cnpj,
             uf,
             ambiente,
@@ -657,10 +662,21 @@ def main() -> int:
                 if proxima_consulta
                 else "daqui a 1 hora"
             )
+            print("Consulta bloqueada por 1 hora.")
             print(
-                "A SEFAZ retornou Consumo Indevido (656). O ultNSU mais recente foi "
-                f"salvo em {ARQUIVO_ULT_NSU.resolve()}. Proxima tentativa: {horario}."
+                f"O ultNSU mais recente foi salvo em {ARQUIVO_ULT_NSU.resolve()}. "
+                f"Proxima tentativa: {horario}."
             )
+            return 1
+
+        if classificacao == "tudo_ja_foi_lido":
+            print("Tudo que estava disponivel ja foi lido.")
+            print(f"Ultimo retorno SEFAZ: {cstat_final} - {motivo_final}")
+            return 1
+
+        if classificacao == "ha_chance_documento_novo":
+            print("Ha chance de existir documento novo ainda nao confirmado.")
+            print(f"Ultimo retorno SEFAZ: {cstat_final} - {motivo_final}")
             return 1
 
         print(

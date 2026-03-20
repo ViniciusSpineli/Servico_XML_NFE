@@ -1566,3 +1566,31 @@
 [20/03/2026 13:31:48] Monitor encerrado pelo usuario.
 [20/03/2026 17:20:19] Monitor iniciado. Intervalo: 10 minuto(s). Pressione Ctrl+C para parar.
 [20/03/2026 17:20:19] Executando baixar_xml_nfe.py...
+[20/03/2026 17:29:08] Monitor iniciado. Intervalo: 10 minuto(s). Pressione Ctrl+C para parar.
+[20/03/2026 17:29:08] Executando baixar_xml_nfe.py...
+[20/03/2026 17:29:08] erro: File "C:\Users\vinic\OneDrive\�rea de Trabalho\Projetos_Python\DANFE\baixar_xml_nfe.py", line 23
+[20/03/2026 17:29:08] erro:     CAMINHO_CERTIFICADO_PFX = "C:\Users\vinic\OneDrive\�rea de Trabalho\Projetos_Python\DANFE\GV_BONELLO_SENHA_123456.pfx"
+[20/03/2026 17:29:08] erro:                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[20/03/2026 17:29:08] erro: SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \UXXXXXXXX escape
+[20/03/2026 17:29:08] Retorno do processo: 1
+[20/03/2026 17:29:08] Proxima tentativa em 10 minuto(s), por volta de 20/03/2026 17:39:08.
+[20/03/2026 17:31:07] Monitor iniciado. Intervalo: 2 minuto(s). Pressione Ctrl+C para parar.
+[20/03/2026 17:31:07] Executando baixar_xml_nfe.py...
+[20/03/2026 17:31:07] erro: File "C:\Users\vinic\OneDrive\�rea de Trabalho\Projetos_Python\DANFE\baixar_xml_nfe.py", line 23
+[20/03/2026 17:31:07] erro:     CAMINHO_CERTIFICADO_PFX = "C:\Users\vinic\OneDrive\�rea de Trabalho\Projetos_Python\DANFE\GV_BONELLO_SENHA_123456.pfx"
+[20/03/2026 17:31:07] erro:                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[20/03/2026 17:31:07] erro: SyntaxError: (unicode error) 'unicodeescape' codec can't decode bytes in position 2-3: truncated \UXXXXXXXX escape
+[20/03/2026 17:31:07] Retorno do processo: 1
+[20/03/2026 17:31:07] Proxima tentativa em 2 minuto(s), por volta de 20/03/2026 17:33:07.
+[20/03/2026 17:33:07] Executando baixar_xml_nfe.py...
+[20/03/2026 17:33:12] saida: A SEFAZ retornou Consumo Indevido (656). O ultNSU mais recente foi salvo em C:\Users\vinic\OneDrive\�rea de Trabalho\Projetos_Python\DANFE\ult_nsu_sefaz.txt. Proxima tentativa: 20/03/2026 18:33:12.
+[20/03/2026 17:33:12] Retorno do processo: 1
+[20/03/2026 17:33:12] Proxima tentativa em 2 minuto(s), por volta de 20/03/2026 17:35:12.
+[20/03/2026 17:35:12] Executando baixar_xml_nfe.py...
+[20/03/2026 17:35:12] saida: Proxima consulta permitida pela SEFAZ: 20/03/2026 18:33:12 (faltam 57min 59s).
+[20/03/2026 17:35:12] Retorno do processo: 1
+[20/03/2026 17:35:12] Proxima tentativa em 2 minuto(s), por volta de 20/03/2026 17:37:12.
+[20/03/2026 17:37:12] Executando baixar_xml_nfe.py...
+[20/03/2026 17:37:12] saida: Proxima consulta permitida pela SEFAZ: 20/03/2026 18:33:12 (faltam 55min 59s).
+[20/03/2026 17:37:12] Retorno do processo: 1
+[20/03/2026 17:37:12] Proxima tentativa em 2 minuto(s), por volta de 20/03/2026 17:39:12.
