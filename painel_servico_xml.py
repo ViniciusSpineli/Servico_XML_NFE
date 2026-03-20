@@ -224,7 +224,7 @@ def configurar_janela(page: ft.Page) -> int:
     page.spacing = 0
     page.scroll = ft.ScrollMode.AUTO
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.bgcolor = "#e7eaef"
+    page.bgcolor = "#eaf4ff"
     page.window.width = largura_janela
     page.window.height = altura_janela
     page.window.resizable = True
@@ -339,7 +339,7 @@ async def main(page: ft.Page) -> None:
         width=largura_bloco,
         padding=ft.Padding.symmetric(horizontal=16, vertical=14),
         border_radius=18,
-        bgcolor="#eef2f6",
+        bgcolor="#eaf4ff",
         content=mensagem,
     )
 
@@ -433,16 +433,16 @@ async def main(page: ft.Page) -> None:
             ft.Container(
                 padding=ft.Padding.symmetric(horizontal=14, vertical=8),
                 border_radius=18,
-                bgcolor="#ffffffcc",
-                border=ft.Border.all(1, "#d7dde6"),
+                bgcolor="#edf6ff",
+                border=ft.Border.all(1, "#c9ddf3"),
                 shadow=[
                     ft.BoxShadow(
                         blur_radius=16,
-                        color="#a8b4c21f",
+                        color="#8fb5de24",
                         offset=ft.Offset(0, 8),
                     )
                 ],
-                content=ft.Icon(ft.Icons.CLOUD_SYNC_OUTLINED, color="#64748b"),
+                content=ft.Icon(ft.Icons.CLOUD_SYNC_OUTLINED, color="#52759b"),
             ),
         ],
     )
@@ -451,19 +451,19 @@ async def main(page: ft.Page) -> None:
     status_chip = ft.Container(
         padding=ft.Padding.symmetric(horizontal=16, vertical=10),
         border_radius=18,
-        bgcolor="#ffffffd9",
-        border=ft.Border.all(1, "#d8dee7"),
+        bgcolor="#eef7ff",
+        border=ft.Border.all(1, "#cfe2f6"),
         shadow=[
             ft.BoxShadow(
                 blur_radius=18,
-                color="#a8b4c22b",
+                color="#8eb2db26",
                 offset=ft.Offset(0, 10),
             )
         ],
         content=ft.Row(
             spacing=10,
             controls=[
-                ft.Icon(ft.Icons.RADAR_OUTLINED, color="#64748b", size=18),
+                ft.Icon(ft.Icons.RADAR_OUTLINED, color="#4f7397", size=18),
                 status,
             ],
         ),
@@ -474,13 +474,13 @@ async def main(page: ft.Page) -> None:
         width=largura_bloco,
         padding=26,
         border_radius=34,
-        bgcolor="#ffffffee",
-        border=ft.Border.all(1, "#dbe2ea"),
+        bgcolor="#f1f8ff",
+        border=ft.Border.all(1, "#d2e5f7"),
         shadow=[
             ft.BoxShadow(
                 spread_radius=0,
                 blur_radius=34,
-                color="#93a1b333",
+                color="#89acd43a",
                 offset=ft.Offset(0, 18),
             ),
             ft.BoxShadow(
@@ -587,7 +587,7 @@ async def main(page: ft.Page) -> None:
                 gradient=ft.LinearGradient(
                     begin=ft.Alignment(-1, -1),
                     end=ft.Alignment(1, 1),
-                    colors=["#f2f4f7", "#e4e8ed", "#d9dfe6"],
+                    colors=["#f6fbff", "#e8f3ff", "#d9ebff"],
                 ),
             ),
             ft.Container(
